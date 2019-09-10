@@ -21,7 +21,7 @@ private static Connection con = null;
          
                 Runtime.getRuntime().addShutdownHook(new MiShDwnHook());
            
-                ResourceBundle rb = ResourceBundle.getBundle("jdbc");
+                ResourceBundle rb = ResourceBundle.getBundle("Servicios.jdbc");
                 String driver = rb.getString("driver");
                 String url = rb.getString("url");
                 String pwd = rb.getString("pwd");
