@@ -103,6 +103,11 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         jButton7.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         jButton7.setForeground(new java.awt.Color(255, 255, 255));
         jButton7.setText("Inventario");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setBackground(new java.awt.Color(78, 191, 78));
         jButton8.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
@@ -231,6 +236,13 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         dispose();
         volver.setVisible(true);
     }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        InventoryGUI inventario = new InventoryGUI();
+        dispose();
+        inventario.setVisible(true);
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments

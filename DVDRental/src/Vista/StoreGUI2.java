@@ -32,8 +32,7 @@ public class StoreGUI2 extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         agregarPaisescbx();
-        agregarCiudadescbx(obteneridPais());
-        agregarDireccionescbx(obteneridCity());
+  
         cargarStore(obteneridAddres());
          
     }
@@ -123,7 +122,7 @@ public void agregarDireccionescbx(int city_id){
     }
  //Este metodo permite calcular la id para un registro
  public int calcularId(){
-     ArrayList<Store>all = new ArrayList();
+     
      ControladorStore s = new ControladorStore();
      return s.listadoStore(0).size()+1;
  }
@@ -162,7 +161,7 @@ public void agregarDireccionescbx(int city_id){
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(0, 153, 153));
+        jPanel1.setBackground(new java.awt.Color(51, 130, 218));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tienda", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Times New Roman", 3, 14))); // NOI18N
 
         btnCancelar.setBackground(new java.awt.Color(78, 191, 78));
@@ -406,13 +405,16 @@ public void agregarDireccionescbx(int city_id){
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 22, Short.MAX_VALUE))
         );
 
         pack();
@@ -509,7 +511,7 @@ public void agregarDireccionescbx(int city_id){
                                         resultado = ControladorStore.grabarStore(a);
                                         if(resultado == 1){
                                             JOptionPane.showMessageDialog(this,
-                                                "Direccion Grabado con éxito",
+                                                "Tienda Grabado con éxito",
                                                 "Confirmación",JOptionPane.INFORMATION_MESSAGE);
                                         }
                                         else{
@@ -524,7 +526,7 @@ public void agregarDireccionescbx(int city_id){
                                         jTextField2.setEnabled(false);
                                        cbxpais.setEnabled(true);
                                        cbxciudad.setEnabled(true);
-                                       cbxciudad.setEnabled(true);
+                                       cbxaddres.setEnabled(true);
 
                                         //   jTextField5.setEnabled(false);
                            
