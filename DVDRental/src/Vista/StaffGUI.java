@@ -5,9 +5,27 @@
  */
 package Vista;
 
-import javax.swing.Icon;
+import Controlador.ControladorAddres;
+import Controlador.ControladorStaff;
+import Controlador.ControladorStore;
+import Modelo.Addres;
+import Modelo.Staff;
+import Modelo.StaffImagen;
+import Modelo.Store;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,6 +39,8 @@ public class StaffGUI extends javax.swing.JFrame {
     public StaffGUI() {
         initComponents();
         setLocationRelativeTo(null);
+        cargarStaff();
+        llenarCbx();
     }
 
     /**
@@ -39,22 +59,29 @@ public class StaffGUI extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jTFNombre = new javax.swing.JTextField();
+        jTFApellido = new javax.swing.JTextField();
+        jTFEmail = new javax.swing.JTextField();
+        cbxActivo = new javax.swing.JComboBox<>();
+        cbxTienda = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         jTFImagen = new javax.swing.JTextField();
-        jBSeleccionarArchivo = new javax.swing.JButton();
+        btnImagen = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnRegistrar = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jTFID = new javax.swing.JTextField();
+        btnNuevo = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jTFPassword = new javax.swing.JTextField();
+        jTFUsername = new javax.swing.JTextField();
+        cbxDireccion = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -79,19 +106,33 @@ public class StaffGUI extends javax.swing.JFrame {
         jLabel5.setText("ID. Tienda");
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel6.setText("Activo: ");
+        jLabel6.setText("Actividad: ");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        jTFNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                jTFNombreActionPerformed(evt);
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jTFEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTFEmailActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("Seleccionar");
+        cbxActivo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxActivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxActivoActionPerformed(evt);
+            }
+        });
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxTienda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxTienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxTiendaActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel7.setText("Imagen: ");
@@ -102,10 +143,10 @@ public class StaffGUI extends javax.swing.JFrame {
             }
         });
 
-        jBSeleccionarArchivo.setText("...");
-        jBSeleccionarArchivo.addActionListener(new java.awt.event.ActionListener() {
+        btnImagen.setText("...");
+        btnImagen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSeleccionarArchivoActionPerformed(evt);
+                btnImagenActionPerformed(evt);
             }
         });
 
@@ -117,34 +158,87 @@ public class StaffGUI extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(78, 191, 78));
-        jButton3.setForeground(new java.awt.Color(240, 240, 240));
-        jButton3.setText("Cancelar");
+        btnCancelar.setBackground(new java.awt.Color(78, 191, 78));
+        btnCancelar.setForeground(new java.awt.Color(240, 240, 240));
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Apellido", "Dirección", "Email", "Tienda ID.", "Activo", "Imagen"
+                "ID.", "Nombre", "Apellido", "Dirección ID.", "Email", "Tienda ID.", "Activo", "Usuario", "Contraseña", "Last Update", "Imagen"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, true, true, true, true, true, true, false, true, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
-        jButton4.setBackground(new java.awt.Color(78, 191, 78));
-        jButton4.setForeground(new java.awt.Color(240, 240, 240));
-        jButton4.setText("Eliminar");
+        btnEliminar.setBackground(new java.awt.Color(78, 191, 78));
+        btnEliminar.setForeground(new java.awt.Color(240, 240, 240));
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
-        jButton5.setBackground(new java.awt.Color(78, 191, 78));
-        jButton5.setForeground(new java.awt.Color(240, 240, 240));
-        jButton5.setText("Modificar");
+        btnModificar.setBackground(new java.awt.Color(78, 191, 78));
+        btnModificar.setForeground(new java.awt.Color(240, 240, 240));
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
 
-        jButton6.setBackground(new java.awt.Color(78, 191, 78));
-        jButton6.setForeground(new java.awt.Color(240, 240, 240));
-        jButton6.setText("Registrar");
+        btnRegistrar.setBackground(new java.awt.Color(78, 191, 78));
+        btnRegistrar.setForeground(new java.awt.Color(240, 240, 240));
+        btnRegistrar.setText("Registrar");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel8.setText("ID.");
+
+        btnNuevo.setBackground(new java.awt.Color(78, 191, 78));
+        btnNuevo.setForeground(new java.awt.Color(240, 240, 240));
+        btnNuevo.setText("Nuevo");
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel9.setText("Username:");
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel10.setText("Password:");
+
+        cbxDireccion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxDireccion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxDireccionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -153,114 +247,232 @@ public class StaffGUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(55, 55, 55)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTFImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jBSeleccionarArchivo)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField4)
-                            .addComponent(jComboBox2, 0, 169, Short.MAX_VALUE))
-                        .addGap(162, 162, 162)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(jTFPassword))
+                            .addComponent(jTFNombre, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTFEmail, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbxTienda, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jTFID, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(jTFUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(284, 284, 284)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jTFImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnImagen))
+                                    .addComponent(cbxActivo, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel3)
                                     .addComponent(jLabel2))
-                                .addGap(6, 6, 6)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jTFApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addGap(26, 26, 26)
+                                        .addComponent(cbxDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel6)
+                                .addComponent(btnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(181, Short.MAX_VALUE)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(25, 25, 25))
+                                .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton2))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1036, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(75, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(44, 44, 44)
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTFID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(jLabel4)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jTFEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxTienda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxActivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jTFImagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBSeleccionarArchivo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                    .addComponent(btnImagen)
+                    .addComponent(jLabel9)
+                    .addComponent(jTFUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton2)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
-                .addContainerGap())
+                    .addComponent(jLabel10)
+                    .addComponent(jTFPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnCancelar)
+                        .addComponent(jButton2)
+                        .addComponent(btnEliminar))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnModificar)
+                        .addComponent(btnRegistrar)
+                        .addComponent(btnNuevo))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private void limpiarListadoTabla(){
+        DefaultTableModel modelo;
+        modelo = (DefaultTableModel) jTable2.getModel();
+        for(int i=modelo.getRowCount()-1; i>=0 ; i--){
+            modelo.removeRow(i);
+        }
+    }
+    
+    public void llenarCbx(){
+        cbxTienda.setModel(new javax.swing.DefaultComboBoxModel<>());
+        ControladorStore p= new ControladorStore();
+        ArrayList<Store>tiendas;
+        tiendas= p.listadoStore(0);
+    for(int i=0;i<tiendas.size();i++){
+         cbxTienda.addItem(" ID:"+tiendas.get(i).getStore_id());}
+    
+    cbxDireccion.setModel(new javax.swing.DefaultComboBoxModel<>());
+        ControladorAddres t= new ControladorAddres();
+        ArrayList<Addres>direcciones;
+        direcciones= t.listadoAddres(0);
+    for(int i=0;i<direcciones.size();i++){
+         cbxDireccion.addItem(" ID:"+direcciones.get(i).getAddresid());}
+    
+        cbxActivo.removeAllItems();
+        cbxActivo.addItem("Activo");
+        cbxActivo.addItem("Inactivo");
+        
+            jTFID.setEnabled(false);
+            jTFNombre.setEnabled(false);
+            jTFApellido.setEnabled(false);
+            jTFEmail.setEnabled(false);
+            jTFUsername.setEnabled(false);
+            jTFPassword.setEnabled(false);
+            jTFImagen.setEnabled(false);
+            btnImagen.setEnabled(false);
+            btnRegistrar.setEnabled(false);
+            cbxTienda.setEnabled(false);
+            cbxActivo.setEnabled(false);
+            cbxDireccion.setEnabled(false);
+       }
+    
+     public void cargarStaff(){
+        jTable2.setDefaultRenderer(Object.class, new StaffImagen());
+        DefaultTableModel modelo;
+        modelo = (DefaultTableModel) jTable2.getModel();    
+        ArrayList<Staff> listarStaff = new ArrayList();
+        listarStaff=ControladorStaff.listarStaff(0);
+        limpiarListadoTabla();
+        JLabel imagen;
+        jTable2.setRowHeight(50);
+        
+        
+        for(int i= 0; i < listarStaff.size(); i++){
+            try{
+                    byte[] bi = listarStaff.get(i).getPicture();
+                    BufferedImage image = null;
+                    InputStream in = new ByteArrayInputStream(bi);
+                    image = ImageIO.read(in);
+                    ImageIcon imgi = new ImageIcon(image.getScaledInstance(60, 60, 0));
+                    imagen = new JLabel(imgi);
+
+                }catch(Exception ex){
+                    imagen = new JLabel("No imagen");
+                }
+              modelo.addRow(new Object[]{
+              listarStaff.get(i).getStaff_id(),
+              listarStaff.get(i).getName(),
+              listarStaff.get(i).getLastName(),
+              listarStaff.get(i).getAdressID(),
+              listarStaff.get(i).getEmail(),
+              listarStaff.get(i).getStoreID(),
+              listarStaff.get(i).getActive(),
+              listarStaff.get(i).getUsername(),
+              listarStaff.get(i).getPassword(),
+              listarStaff.get(i).getLasUpdate(),
+              imagen
+                      });
+        }
+     }
+    
+     
+     public int calcularId(){
+     ArrayList<Staff>all = new ArrayList();
+     ControladorStaff s = new ControladorStaff();
+     return s.listarStaff(0).size()+1;
+ }
+     
+     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Admin volver = new Admin();
         dispose();
         volver.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jBSeleccionarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSeleccionarArchivoActionPerformed
+    private void btnImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenActionPerformed
         JFileChooser j = new JFileChooser();
         FileNameExtensionFilter fil = new FileNameExtensionFilter("JPG, PNG & GIF","jpg","png","gif");
         j.setFileFilter(fil);
@@ -271,15 +483,280 @@ public class StaffGUI extends javax.swing.JFrame {
             jTFImagen.setText(ruta);
             
         }
-    }//GEN-LAST:event_jBSeleccionarArchivoActionPerformed
+    }//GEN-LAST:event_btnImagenActionPerformed
 
     private void jTFImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFImagenActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTFImagenActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jTFNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_jTFNombreActionPerformed
+
+    private void cbxTiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTiendaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxTiendaActionPerformed
+
+    private void cbxActivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxActivoActionPerformed
+        //
+    }//GEN-LAST:event_cbxActivoActionPerformed
+
+    private void jTFEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFEmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTFEmailActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        if(jTFNombre.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(this,
+                "Por favor seleccione un empleado","Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+        else{
+            int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Desea Eliminar el staff de id: " +
+                jTFNombre.getText().trim()+
+                " ?", "Confirmación de Acción", JOptionPane.YES_NO_OPTION);
+            if(respuesta == JOptionPane.YES_OPTION){
+                int id = 0;
+                id  = Integer.parseInt(jTFNombre.getText().trim());
+
+                if(ControladorStaff.borrarStaff(id) == 1){
+                    JOptionPane.showMessageDialog(this,
+                        "Registro Borrado con éxtio",
+                        "Confirmación de acción",
+                        JOptionPane.INFORMATION_MESSAGE);
+                    cargarStaff();
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,
+                        "Error al borrar", "Confirmación de acción",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+         if(btnModificar.getText().equalsIgnoreCase("Modificar")){
+            if(jTable2.getSelectedRow() == -1){
+                if(jTable2.getRowCount() == 0){
+                    JOptionPane.showMessageDialog(this,"No hay registros");
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,"Seleccione una fila");
+                }
+
+            } else{
+                
+                jTFID.setEnabled(true);
+                jTFNombre.setEnabled(true);
+                jTFApellido.setEnabled(true);
+                jTFUsername.setEnabled(true);
+                jTFPassword.setEnabled(true);
+                jTFEmail.setEnabled(true);
+                jTFImagen.setEnabled(true);
+                
+                cbxActivo.setEnabled(true);
+                cbxDireccion.setEnabled(true);
+                cbxTienda.setEnabled(true);
+                
+                btnImagen.setEnabled(true);
+                btnEliminar.setEnabled(false);
+                btnNuevo.setEnabled(false);
+                btnModificar.setText("Actualizar");
+                btnCancelar.setEnabled(true);
+                jTable2.setEnabled(false);
+               
+            }
+            
+         }else 
+         {
+             jTFApellido.setEnabled(false);
+            btnEliminar.setEnabled(true);
+            btnNuevo.setEnabled(true);
+            btnRegistrar.setEnabled(false);
+            btnModificar.setText("Modificar");
+            btnCancelar.setEnabled(false);
+            jTable2.setEnabled(true);
+            
+            
+
+            Staff staff = new Staff();
+
+            staff.setStaff_id(Integer.parseInt(jTFID.getText()));
+            staff.setName(jTFNombre.getText());
+            staff.setLastname(jTFApellido.getText());
+            
+            int id,pos;
+            String cbx;
+            cbx=cbxTienda.getSelectedItem().toString();
+            pos=cbx.lastIndexOf(":")+1; 
+            id= Integer.parseInt(cbx.substring(pos));
+            staff.setStoreID(id);
+            
+            staff.setEmail(jTFEmail.getText());
+            
+            
+            int id1,pos1;
+            String cbx1;
+            cbx1=cbxDireccion.getSelectedItem().toString();
+            pos1=cbx1.lastIndexOf(":")+1; 
+            id1= Integer.parseInt(cbx1.substring(pos1));
+            staff.setAdressID(id1);
+            
+            staff.setUsername(jTFUsername.getText());
+            staff.setPassword(jTFPassword.getText());
+            if(cbxActivo.getSelectedItem().equals("Activo"))
+            {
+                staff.setActive(true);
+            }
+            
+            if(cbxActivo.getSelectedItem().equals("Inactivo"))
+            {
+                staff.setActive(false);
+            }
+            
+            Date date = new Date();
+            staff.setLasUpdate(new Timestamp(date.getTime()));
+            
+            try{
+            byte[] icono = new byte[(int) jTFImagen.getText().length()];
+            InputStream input = new FileInputStream(jTFImagen.getText());
+            input.read(icono);
+            staff.setPicture(icono);
+        }catch(Exception ex){
+            staff.setPicture(null);
+        }
+
+            if(ControladorStaff.modificarStaff(staff) == 1){
+                JOptionPane.showMessageDialog(this,"Actualización exitosa");
+                this.cargarStaff();
+            } else {
+                JOptionPane.showMessageDialog(this,"Actualización Fallida");
+            }
+            
+            
+         }
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        btnEliminar.setEnabled(true);
+        btnNuevo.setEnabled(true);
+        btnRegistrar.setEnabled(false);
+        btnModificar.setText("Modificar");
+        btnCancelar.setEnabled(false);
+        jTable2.setEnabled(true);
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    
+    
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+         DefaultTableModel modelo;
+        modelo = (DefaultTableModel) jTable2.getModel();
+
+        if(jTable2.getSelectedRow()==-1){
+            if(jTable2.getRowCount()==0){
+                JOptionPane.showMessageDialog(this,"No hay registros");
+            }
+            else{
+                JOptionPane.showMessageDialog(this,"Seleccione una fila");
+            }
+        }else {
+          
+               jTFID.setText(modelo.getValueAt(jTable2.getSelectedRow(), 0).toString());
+               jTFNombre.setText(modelo.getValueAt(jTable2.getSelectedRow(), 1).toString());
+               jTFApellido.setText(modelo.getValueAt( jTable2.getSelectedRow(), 2).toString());
+               jTFEmail.setText(modelo.getValueAt(jTable2.getSelectedRow(), 4).toString());
+               jTFUsername.setText((modelo.getValueAt(jTable2.getSelectedRow(), 7).toString()));
+               jTFPassword.setText((modelo.getValueAt(jTable2.getSelectedRow(), 8).toString()));
+               
+               
+            String aux;
+            aux =modelo.getValueAt(jTable2.getSelectedRow(), 5).toString();
+            
+            int  auxint;
+            auxint = Integer.parseInt(aux);
+            
+            cbxTienda.setSelectedIndex(auxint - 1);
+            
+            aux = modelo.getValueAt(jTable2.getSelectedRow(), 3).toString();
+            auxint = Integer.parseInt(aux);
+            
+            cbxDireccion.setSelectedIndex(auxint - 1);
+            
+            
+               if (modelo.getValueAt(jTable2.getSelectedRow(), 6).toString().equalsIgnoreCase("true")){
+                   cbxActivo.setSelectedIndex(0);
+               }else {
+                   cbxActivo.setSelectedIndex(1);
+               }
+               
+               //////////////////////
+   //Evita errores si  esta vacio
+            try{
+                
+                jTFImagen.setText(modelo.getValueAt(jTable2.getSelectedRow(), 10).toString());
+              
+            }
+            catch(Exception e){
+               jTFImagen.setText("");
+            }  
+        }
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        jTFID.setText(calcularId()+"");
+        jTFNombre.setText("");
+        jTFApellido.setText("");
+        jTFEmail.setText("");
+        jTFUsername.setText("");
+        jTFPassword.setText("");
+        jTFImagen.setText("");
+
+        if(btnNuevo.getText().equals("Nuevo")){
+            btnRegistrar.setEnabled(true);
+            jTFID.setEnabled(false);
+            jTFNombre.setEnabled(true);
+            jTFApellido.setEnabled(true);
+            jTFEmail.setEnabled(true);
+            jTFUsername.setEnabled(true);
+            jTFPassword.setEnabled(true);
+            jTFImagen.setEnabled(true);
+            cbxTienda.setEnabled(true);
+            cbxActivo.setEnabled(true);
+            cbxDireccion.setEnabled(true);
+                      
+            btnRegistrar.setEnabled(true);
+            btnEliminar.setEnabled(false);
+            btnModificar.setEnabled(false);
+            btnNuevo.setText("Cancelar");
+            jTable2.setEnabled(false);
+            jTFID.requestFocusInWindow();
+        }
+        else{
+            btnRegistrar.setEnabled(false);
+            jTFID.setEnabled(false);
+            jTFNombre.setEnabled(false);
+            jTFApellido.setEnabled(false);
+            jTFEmail.setEnabled(false);
+            jTFUsername.setEnabled(false);
+            jTFPassword.setEnabled(false);
+            jTFImagen.setEnabled(false);
+            cbxTienda.setEnabled(false);
+            cbxActivo.setEnabled(false);
+                
+            btnNuevo.setText("Nuevo");
+            btnModificar.setEnabled(true);
+            btnEliminar.setEnabled(true);
+            jTable2.setEnabled(true);
+            btnNuevo.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void cbxDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxDireccionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxDireccionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -307,6 +784,7 @@ public class StaffGUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(StaffGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -317,28 +795,35 @@ public class StaffGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jBSeleccionarArchivo;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnImagen;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnNuevo;
+    private javax.swing.JButton btnRegistrar;
+    private javax.swing.JComboBox<String> cbxActivo;
+    private javax.swing.JComboBox<String> cbxDireccion;
+    private javax.swing.JComboBox<String> cbxTienda;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jTFApellido;
+    private javax.swing.JTextField jTFEmail;
+    private javax.swing.JTextField jTFID;
     private javax.swing.JTextField jTFImagen;
+    private javax.swing.JTextField jTFNombre;
+    private javax.swing.JTextField jTFPassword;
+    private javax.swing.JTextField jTFUsername;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
 }
